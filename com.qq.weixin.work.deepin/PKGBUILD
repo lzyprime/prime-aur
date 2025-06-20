@@ -1,0 +1,30 @@
+
+pkgname='com.qq.weixin.work.deepin'
+pkgver='4.1.32.6005deepin2'
+pkgrel='4.1.32'
+pkgdesc="Tencent WXWork Client on Deepin Wine"
+arch=('x86_64')
+url="http://www.deepin.org"
+license=('Proprietary')
+makedepends=('tar')
+source=(
+    "https://com-store-packages.uniontech.com/appstorev23/pool/appstore/c/com.qq.weixin.work.deepin/com.qq.weixin.work.deepin_${pkgver}_amd64.deb"
+)
+noextract=(
+    "com.qq.weixin.work.deepin_${pkgver}_amd64.deb"
+)
+sha256sums=('d709c80969f645cbce0e462cf472a79e7ea01289dce034fefdf3f281c2d42cf3')
+
+depends=('deepin-wine8-stable>=1' 'deepin-wine-helper>=1')
+
+install=wxwork.install
+
+package() {
+
+    mkdir -p "unpack"
+    ar -x "com.qq.weixin.work.deepin_${pkgver}_amd64.deb" data.tar.xz --output "unpack"
+    tar -xf "unpack/data.tar.xz" --directory="${pkgdir}"
+}
+
+
+

@@ -1,0 +1,42 @@
+
+pkgname='deepin-wine-helper'
+_pkgver='5.4.3-1'
+pkgver=5.4.3
+pkgrel=5.4.3
+pkgdesc="deepin wine helper"
+arch=('x86_64')
+url="http://www.deepin.org"
+license=('Proprietary')
+makedepends=('tar')
+source=(
+    "https://com-store-packages.uniontech.com/appstorev23/pool/appstore/d/$pkgname/${pkgname}_${_pkgver}_amd64.deb"
+)
+noextract=(
+    "${pkgname}_${_pkgver}_amd64.deb"
+)
+
+sha256sums=('a389eaff68a33312d8006faa41520c93464e08361fe8c21fa4a618f9a237cdb5')
+
+depends=(
+#p7zip-full
+glibc #libc6 (>= 2.4)
+#libdtkcore5 (>= 5.2.0)
+#libdtkgui5 (>= 5.2.0)
+#libdtkwidget5
+#libgcc1 (>= 1:3.0)
+#libgl1
+#libqt5core5a (>= 5.11.0~rc1)
+#libqt5gui5 (>= 5.7.0)
+#libqt5widgets5 (>= 5.0.2)
+#libstdc++6 (>= 4.1.1)
+#libx11-6
+#python3-dbus
+)
+
+install=helper.install
+
+package() {
+    mkdir -p "unpack"
+    ar -x "${pkgname}_${_pkgver}_amd64.deb" data.tar.xz --output "unpack"
+    tar -xf "unpack/data.tar.xz" --directory="${pkgdir}"
+}

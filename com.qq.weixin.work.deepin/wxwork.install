@@ -1,0 +1,74 @@
+#!/bin/sh
+
+ACTIVEX_NAME=""
+
+doinstall()
+{
+    echo "do install script"
+    if [ -f "/opt/apps/com.qq.weixin.work.deepin/files/install.sh" ];then
+        /opt/apps/com.qq.weixin.work.deepin/files/install.sh -i
+    fi
+
+    if [ -n "$ACTIVEX_NAME" ]; then
+        if [ ! -d "/usr/lib/mozilla/plugins" ];then
+            mkdir -p /usr/lib/mozilla/plugins
+        fi
+        cp /usr/lib/pipelight/libpipelight.so /usr/lib/mozilla/plugins/libpipelight-${ACTIVEX_NAME}.so
+        glib-compile-schemas /usr/share/glib-2.0/schemas/
+    fi
+}
+
+entries_dir=/opt/apps/com.qq.weixin.work.deepin/entries
+install_launch() {
+	cp -r "$entries_dir"/* /usr/share/
+}
+rm_launch() {
+	find "$entries_dir" ! -type d | while read -r l; do
+		file="/usr/share/${l#$entries_dir}"
+		rm -f $file
+		while ! rmdir "$(dirname "$file")"; do
+			file="$(dirname "$file")"
+		done
+	done
+}
+rm_oldpkg()
+{
+    if [ -f "/opt/apps/com.qq.weixin.work.deepin/files/install.sh" ];then
+        /opt/apps/com.qq.weixin.work.deepin/files/install.sh -r
+    fi
+}
+
+
+## arg 1:  the new package version
+#pre_install() {
+	# do something here
+#}
+
+## arg 1:  the new package version
+post_install() {
+	doinstall
+	install_launch
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+pre_upgrade() {
+	pre_remove
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+post_upgrade() {
+	post_install
+}
+
+## arg 1:  the old package version
+pre_remove() {
+	rm_launch
+	rm_oldpkg
+}
+
+## arg 1:  the old package version
+#post_remove() {
+	# do something here
+#}
