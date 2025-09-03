@@ -1,0 +1,35 @@
+#!/bin/sh
+
+ACTIVEX_NAME=""
+
+## arg 1:  the new package version
+#pre_install() {
+	# do something here
+#}
+
+## arg 1:  the new package version
+post_install() {
+	bash /var/lib/dpkg/info/deepin-wine-builder/postinst configure
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+# pre_upgrade() {
+
+# }
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+# post_upgrade() {
+
+# }
+
+## arg 1:  the old package version
+# pre_remove() {
+
+# }
+
+## arg 1:  the old package version
+#post_remove() {
+	# do something here
+#}
