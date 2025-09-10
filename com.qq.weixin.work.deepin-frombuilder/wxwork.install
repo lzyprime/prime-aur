@@ -1,0 +1,197 @@
+#!/bin/sh
+
+doinstall()
+{
+    echo "do install script"
+    if [ -f "/opt/apps/com.qq.weixin.work.deepin/files/install.sh" ];then
+        /opt/apps/com.qq.weixin.work.deepin/files/install.sh -i
+    fi
+
+    if [ -n "$ACTIVEX_NAME" ]; then
+        if [ ! -d "/usr/lib/mozilla/plugins" ];then
+            mkdir -p /usr/lib/mozilla/plugins
+        fi
+        cp /usr/lib/pipelight/libpipelight.so /usr/lib/mozilla/plugins/libpipelight-${ACTIVEX_NAME}.so
+        glib-compile-schemas /usr/share/glib-2.0/schemas/
+    fi
+}
+
+postinst() {
+case $1 in
+    "configure")
+        echo "most recently configured version $2"
+        doinstall
+        ;;
+    "abort-upgrade")
+        echo "Old: abort upgrade to $2"
+        ;;
+    "abort-remove")
+        if [ "#$2" == "#in-favour" ]; then
+            echo "Conflictor: try to install package $3 version $4"
+        else
+            echo "abort-remove"
+        fi
+        ;;
+    "abort-deconfigure")
+        # $2 == "in-favour"
+        echo "Conflictor: failed install package:$3 version $4"
+        if [ "#$5" == "removing" ]; then
+            echo "Deconfigured: removing conflicting package $6 version $7"
+        fi
+        ;;
+    *)
+        echo "unkown action"
+        ;;
+esac
+}
+
+doremove()
+{
+    echo "prerm do remove script"
+    if [ -f "/opt/apps/com.qq.weixin.work.deepin/files/install.sh" ];then
+        /opt/apps/com.qq.weixin.work.deepin/files/install.sh -r
+    fi
+}
+
+doupdate()
+{
+    echo "prerm do update script"
+    if [ -f "/opt/apps/com.qq.weixin.work.deepin/files/install.sh" ];then
+        /opt/apps/com.qq.weixin.work.deepin/files/install.sh -r
+    fi
+}
+
+prerm() {
+
+case $1 in
+    "remove")
+        if [ "$2" == "in-favour" ]; then
+            echo "prerm Conflictor: install $3 version $4 to remove me"
+        else
+            echo "prerm normal remove"
+        fi
+        doremove
+        ;;
+    "upgrade")
+        echo "prerm Old: upgrade to version $2"
+        doupdate
+        ;;
+    "failed-upgrade")
+        echo "prerm failed to upgrade from $3"
+        ;;
+    "deconfigure")
+        # $2 == "in-favour"
+        echo "prerm Deconfigured: install package:$3 version $4"
+        if [ "#$5" == "removing" ]; then
+            echo "Deconfigured: removing conflicting package $6 version $7"
+        fi
+        ;;
+    *)
+        ;;
+esac
+}
+
+
+doremove()
+{
+    echo "do remove script"
+    if [ -n "$ACTIVEX_NAME" ]; then
+        rm /usr/lib/mozilla/plugins/libpipelight-${ACTIVEX_NAME}.so
+        glib-compile-schemas /usr/share/glib-2.0/schemas/
+    fi
+
+    if [[ -z "$DISABLE_CLEAN_BOTTLE" ]] && [[ -n "$BOTTLE_NAME" ]];then
+        bottle_path="/home/$(logname)/.deepinwine/${BOTTLE_NAME}"
+        if [ -d "$bottle_path" ];then
+            rm -rf "$bottle_path"
+            echo "rm $bottle_path"
+        fi
+    fi
+}
+
+_postinst() {
+case $1 in
+    "remove")
+        if [ "#$2" = "in-favour" ]; then
+            echo "Conflictor: install $3 version $4 to remove me"
+        else
+            echo "normal remove me"
+        fi
+        doremove
+        ;;
+    "purge")
+        echo "purge"
+        doremove
+        ;;
+    "upgrade")
+        echo "Old: upgrade to $2"
+        ;;
+    "abort-upgrade")
+        echo "abort to upgrade to $2"
+        ;;
+    "failed-upgrade")
+        echo "failed upgrade from version $2"
+        ;;
+    "abort-install")
+        if [ ! -z "$2" ]; then
+            echo "abort install form version $3"
+        else
+            echo "abort-install"
+        fi
+        ;;
+    "disappear")
+        echo "Disappearer: overwirte by $3 version $4"
+        ;;
+    *)
+        echo "unkown action"
+        ;;
+esac
+}
+
+postrm() {
+ACTIVEX_NAME="" \
+BOTTLE_NAME="com.qq.weixin.work.deepin" \
+DISABLE_CLEAN_BOTTLE="" \
+_postrm "$@"
+
+}
+
+## arg 1:  the new package version
+#pre_install() {
+	# do something here
+#}
+
+## arg 1:  the new package version
+post_install() {
+ACTIVEX_NAME="" postinst configure
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+pre_upgrade() {
+ACTIVEX_NAME="" \
+BOTTLE_NAME="com.qq.weixin.work.deepin" \
+DISABLE_CLEAN_BOTTLE="" \
+prerm upgrade
+
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+post_upgrade() {
+ACTIVEX_NAME="" postinst configure
+}
+
+## arg 1:  the old package version
+pre_remove() {
+ACTIVEX_NAME="" \
+BOTTLE_NAME="com.qq.weixin.work.deepin" \
+DISABLE_CLEAN_BOTTLE="" \
+prerm remove
+
+}
+
+## arg 1:  the old package version
+post_remove() {
+	postrm purge
+}

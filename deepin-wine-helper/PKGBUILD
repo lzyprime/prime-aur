@@ -1,8 +1,8 @@
 
 pkgname='deepin-wine-helper'
-_pkgver='5.4.3-1'
-pkgver=5.4.3
-pkgrel=5.4.3
+_pkgver='5.4.7-1'
+pkgver=5.4.7
+pkgrel=1
 pkgdesc="deepin wine helper"
 arch=('x86_64')
 url="http://www.deepin.org"
@@ -12,10 +12,13 @@ source=(
     "https://com-store-packages.uniontech.com/appstorev23/pool/appstore/d/$pkgname/${pkgname}_${_pkgver}_amd64.deb"
 )
 noextract=(
-    "${pkgname}_${_pkgver}_amd64.deb"
+    "${pkgname}_${_pkgver}_*.deb"
 )
+options=('!strip' '!debug')
 
-sha256sums=('a389eaff68a33312d8006faa41520c93464e08361fe8c21fa4a618f9a237cdb5')
+sha256sums=(
+618378922572d34ee8b6e5f54f365e44c4ea2476a078f2b045776c11f9c1a82e
+)
 
 depends=(
 #p7zip-full

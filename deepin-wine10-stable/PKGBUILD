@@ -1,19 +1,21 @@
 
 pkgname='deepin-wine10-stable'
-pkgver=10.7deepin7
-pkgrel="10.7"
+pkgver=10.7deepin9
+pkgrel="1"
 pkgdesc="Deepin wine10 stable"
 arch=('x86_64')
 url="http://www.deepin.org"
 license=('Proprietary')
 makedepends=('tar')
 source=(
-    "https://com-store-packages.uniontech.com/appstorev23/pool/appstore/d/deepin-wine8-stable/${pkgname}_${pkgver}_amd64.deb"
+    "https://com-store-packages.uniontech.com/appstorev23/pool/appstore/d/deepin-wine10-stable/${pkgname}_${pkgver}_amd64.deb"
 )
 noextract=(
-    "${pkgname}_${pkgver}_amd64.deb"
+    "${pkgname}_${pkgver}_*.deb"
 )
-sha256sums=('dc13857eac6a1476f3569910f54f8ba1c6205510923e4c6116a8a25c485a2985')
+sha256sums=(
+cd67c24aa2e2dbe7f7a6c1a16aa4ace1ec493ce2843ae1f462847fc15fb7c765
+)
 options=('!strip' '!debug')  # 关键修复：禁用自动修改
 
 depends=(
